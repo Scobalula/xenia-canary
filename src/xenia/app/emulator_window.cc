@@ -652,6 +652,10 @@ bool EmulatorWindow::Initialize() {
         MenuItem::Type::kString, "&Break into Host Debugger",
         "Ctrl+Pause/Break",
         std::bind(&EmulatorWindow::CpuBreakIntoHostDebugger, this)));
+    cpu_menu->AddChild(MenuItem::Create(
+        MenuItem::Type::kString, "Dump Memory",
+        "None",
+        std::bind(&EmulatorWindow::DumpMemory, this)));
   }
   main_menu->AddChild(std::move(cpu_menu));
 
@@ -1370,6 +1374,20 @@ void EmulatorWindow::CpuBreakIntoDebugger() {
 }
 
 void EmulatorWindow::CpuBreakIntoHostDebugger() { xe::debugging::Break(); }
+
+void EmulatorWindow::DumpMemory() {
+  // TODO: we prob don't need 4GB
+  // TODO: use safe ptr
+  uint8_t* buf = new uint8_t[4294967296];
+  xe::ByteStream stream(buf, 4294967296, 0);
+  emulator()->memory()->Save(&stream);
+
+  std::ofstream i("out.dat", std::ios::binary);
+
+  i.write((const char*)buf, 4294967296);
+
+  delete[] buf;
+}
 
 void EmulatorWindow::GpuTraceFrame() {
   emulator()->graphics_system()->RequestFrameTrace();

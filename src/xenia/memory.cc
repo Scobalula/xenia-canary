@@ -674,11 +674,14 @@ void Memory::DumpMap() {
 
 bool Memory::Save(ByteStream* stream) {
   XELOGD("Serializing memory...");
-  heaps_.v00000000.Save(stream);
+  // heaps_.v00000000.Save(stream);
   heaps_.v40000000.Save(stream);
   heaps_.v80000000.Save(stream);
   heaps_.v90000000.Save(stream);
-  heaps_.physical.Save(stream);
+  // heaps_.physical.Save(stream);
+  heaps_.vA0000000.Save(stream);
+  heaps_.vC0000000.Save(stream);
+  heaps_.vE0000000.Save(stream);
 
   return true;
 }
